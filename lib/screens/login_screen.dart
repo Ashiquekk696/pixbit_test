@@ -126,11 +126,13 @@ class LoginScreen extends StatelessWidget {
                                     BlocProvider.of<LoginBloc>(context)
                                         .add(LoginPressedEvent(
                                             context: context,
-                                            userName: "nidhinnp@gmail.com",
+                                            userName:
+                                            //"nidhinnp@gmail.com",
 
-                                            //userNameController.text,
-                                            password: "12345678Np"
-                                            //passwordController.text
+                                        userNameController.text,
+                                            password:
+                                            //"12345678Np"
+                                           passwordController.text
                                             ));
                                   }
                                 },
