@@ -6,19 +6,13 @@ import 'package:pixbit_test/widgets/app_bar_widget.dart';
 
 class EmployeeDetailsScreen extends StatefulWidget {
   EmployeeDetailsScreen({super.key, this.employeeData});
-  EmployeeModel? employeeData;
+  EmployeeSubDataModel? employeeData;
   @override
   State<EmployeeDetailsScreen> createState() => _EmployeeDetailsScreenState();
 }
 
 class _EmployeeDetailsScreenState extends State<EmployeeDetailsScreen> {
-  formatDate(date) {
-    DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
-
-    String string =
-        dateFormat.format(date); //Converting DateTime object to String
-    return string;
-  }
+  
 
   @override
   Widget build(BuildContext context) {

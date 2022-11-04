@@ -245,27 +245,12 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
                                     dropdownvalue = v;
                                     setState(() {});
                                   },
-
                                   items: state.designationsModel?.map((e) {
                                     return DropdownMenuItem<String>(
                                         value: e.id.toString(),
                                         child: Text(e.name.toString()));
                                   }).toList(),
                                   value: designationId,
-                                  //                selectedItemBuilder: (context) => state.designationsModel?.map((e) {
-                                  //   return DropdownMenuItem<String??"">(
-                                  //     child: Column(
-                                  //       mainAxisAlignment: MainAxisAlignment.center,
-                                  //       children: [
-                                  //         Text(e.tValue?[Preferences.languageCode] ??
-                                  //             e.tValue?['ar'] ??
-                                  //             e.tValue?['en'] ??
-                                  //             ""),
-                                  //       ],
-                                  //     ),
-                                  //     value: e.id.toString(),
-                                  //   );
-                                  // }).toList(),
                                 );
                               }
                               return Container();

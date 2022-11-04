@@ -41,7 +41,9 @@ class AddEmployeeBloc extends Bloc<AddEmployeeMainEvent, AddEmployeeMainState> {
           Navigator.pushReplacement(
               event.context,
               MaterialPageRoute(
-                  builder: (context) =>FinalScreen()));
+                  builder: (context) => RepositoryProvider(
+                      create: (context) => ContactsRepository(),
+                      child: HomeScreen())));
         }
         emit(AddEmployeeLoadedState(mesage: response['message']));
       } catch (e) {

@@ -39,8 +39,7 @@ class LoginScreen extends StatelessWidget {
                 return Loader();
               }
 
-              if (state is LoginErrorState) { 
-              } 
+              if (state is LoginErrorState) {}
 
               return Container(
                   height: MediaQuery.of(context).size.height,
@@ -127,13 +126,12 @@ class LoginScreen extends StatelessWidget {
                                     BlocProvider.of<LoginBloc>(context)
                                         .add(LoginPressedEvent(
                                             context: context,
-                                            userName:
-                                                // "nidhinnp@gmail.com",
+                                            userName: "nidhinnp@gmail.com",
 
-                                                userNameController.text,
-                                            password:
-                                                //"12345678Np"
-                                                passwordController.text));
+                                            //userNameController.text,
+                                            password: "12345678Np"
+                                            //passwordController.text
+                                            ));
                                   }
                                 },
                                 label: "Sign in",
@@ -144,7 +142,7 @@ class LoginScreen extends StatelessWidget {
                       )
                     ],
                   ));
-              // } 
+              // }
             }),
           ),
         ),

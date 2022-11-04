@@ -8,10 +8,10 @@ class HomeLoadingState extends HomeMainState {
 }
 
 class HomeLoadedState extends HomeMainState {
- 
   HomeLoadedState({this.employeeModel});
-  List<EmployeeModel>? employeeModel=[];
-  List<Object?> get props => [ employeeModel];
+//  List<EmployeeSubDataModel>? employeeSubDataModel=[];
+  List<EmployeeDataModel>? employeeModel=[];
+  List<Object?> get props => [employeeModel];
 }
 
 class HomeErrorState extends HomeMainState {

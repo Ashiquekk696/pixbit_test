@@ -29,22 +29,18 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  var currentPage = 1;
   getScrolledData() async {
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
         currentPage++;
         print(currentPage);
-        BlocProvider(
-            create: (context) => HomeBloc(
-                contactsRepository:
-                    RepositoryProvider.of<ContactsRepository>(context),
-                page: currentPage.toString()));
         setState(() {});
       }
     });
   }
+
+  var currentPage = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -68,10 +64,9 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: BlocProvider(
         create: (context) => HomeBloc(
-            contactsRepository:
-                RepositoryProvider.of<ContactsRepository>(context),
-            page: currentPage.toString())
-          ..add(HomeDataEvent()),
+          contactsRepository:
+              RepositoryProvider.of<ContactsRepository>(context),
+        )..add(HomeDataEvent(),),
         child: Column(
           children: [
             AppBarWidget(
@@ -81,127 +76,140 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: MediaQuery.removePadding(
               context: context,
               removeTop: true,
-              child: BlocBuilder<HomeBloc, HomeMainState>(
-                  builder: (context, state) {
-                if (state is HomeLoadingState) {
-                  return Loader();
-                }
-                if (state is HomeErrorState) {
-                  print("loading");
-                }
-
-                if (state is HomeLoadedState) {
-                  getScrolledData() async {
-                    scrollController.addListener(() {
-                      if (scrollController.position.pixels ==
-                          scrollController.position.maxScrollExtent) {
-                        currentPage++;
-                        print(currentPage);
-
-                        setState(() {});
-                      }
-                    });
+              child: BlocListener<HomeBloc, HomeMainState>(
+                listener: (context, state) {
+                  if (state is HomeLoadedState) {
+                    BlocProvider(
+                        create: (context) => HomeBloc(
+                              contactsRepository:
+                                  RepositoryProvider.of<ContactsRepository>(
+                                      context),
+                            ));
+                  }
+                },
+                child: BlocBuilder<HomeBloc, HomeMainState>(
+                    builder: (context, state) {
+                  // if (state is HomeLoadingState) {
+                  //   return Loader();
+                  // }
+                  if (state is HomeErrorState) {
+                    print("loading");
                   }
 
-                  return ListView.builder(
-                      controller: scrollController
-                        ..addListener(() {
-                          getScrolledData();
-                          if (scrollController.position.pixels ==
-                              scrollController.position.maxScrollExtent) {
-                            BlocProvider(
-                                create: (context) => HomeBloc(
-                                    contactsRepository: RepositoryProvider.of<
-                                        ContactsRepository>(context),
-                                    page: currentPage.toString()));
-                          }
-                        }),
-                      itemCount: state.employeeModel?.length ?? 0,
-                      itemBuilder: (context, i) {
-                        return Column(
-                          children: [
-                            GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              EmployeeDetailsScreen(
-                                                employeeData:
-                                                    state.employeeModel?[i],
-                                              )));
-                                },
-                                child: Container(
-                                  color: Colors.white,
-                                  padding: EdgeInsets.only(left: 20),
-                                  height: 77,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        height: 70,
-                                        width: 55,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                                image: NetworkImage(state
-                                                        .employeeModel?[i]
-                                                        .profileImage ??
-                                                    ""),
-                                                fit: BoxFit.fill)),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
+                  if (state is HomeLoadedState) {
+                    return ListView.builder(
+                        shrinkWrap: true,
+                        controller: scrollController
+                          ..addListener(() {
+                            if (HomeBloc.currentPage < HomeBloc.lastPage) {
+                              if (scrollController.position.pixels ==
+                                  scrollController.position.maxScrollExtent) {
+                                BlocProvider.of<HomeBloc>(context)
+                                  ..add(HomeDataEvent());
+                              }
+                            }
+                          }),
+                        itemCount: state.employeeModel?.length ?? 1,
+                        itemBuilder: (context, index) {
+                          return ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                        
+                              itemCount: state.employeeModel?[index]
+                                      .employeeDetails?.length ??
+                                  1,
+                              itemBuilder: (context, i) {
+                                var data = state.employeeModel?[index]
+                                        .employeeDetails ??
+                                    [];
+                                //   setState(() {});
+                                return Column(
+                                  children: [
+                                    GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      EmployeeDetailsScreen(
+                                                        employeeData: data[i],
+                                                      )));
+                                        },
+                                        child: Container(
+                                          color: Colors.white,
+                                          padding: EdgeInsets.only(left: 20),
+                                          height: 77,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Row(
                                             children: [
-                                              Text(
-                                                state.employeeModel?[i]
-                                                        .firstName ??
-                                                    "",
-                                                style: AppStyles()
-                                                    .mediumSmallText(),
+                                              Text(""),
+                                              Container(
+                                                height: 70,
+                                                width: 55,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    image: DecorationImage(
+                                                        image: NetworkImage(data?[
+                                                                    i]
+                                                                .profileImage ??
+                                                            ""),
+                                                        fit: BoxFit.fill)),
                                               ),
                                               SizedBox(
-                                                width: 5,
+                                                width: 10,
                                               ),
-                                              Text(
-                                                state.employeeModel?[i]
-                                                        .lastName ??
-                                                    "",
-                                                style: AppStyles()
-                                                    .mediumSmallText(),
-                                              ),
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        data[i].firstName ?? "",
+                                                        style: AppStyles()
+                                                            .mediumSmallText(),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      Text(
+                                                        data[i].lastName ?? "",
+                                                        style: AppStyles()
+                                                            .mediumSmallText(),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    data?[i]
+                                                            .mobile
+                                                            .toString() ??
+                                                        "",
+                                                    style: AppStyles()
+                                                        .smallText(
+                                                            color: Colors.grey,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
+                                                  )
+                                                ],
+                                              )
                                             ],
                                           ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            state.employeeModel?[i].mobile
-                                                    .toString() ??
-                                                "",
-                                            style: AppStyles().smallText(
-                                                color: Colors.grey,
-                                                fontWeight: FontWeight.w400),
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                )),
-                          ],
-                        );
-                      });
-                }
-                return Loader();
-              }),
+                                        )),
+                                  ],
+                                );
+                              });
+                        });
+                  }
+                  return Loader();
+                }),
+              ),
             ))
           ],
         ),

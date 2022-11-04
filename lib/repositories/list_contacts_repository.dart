@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 
 class ContactsRepository {
   getAllContacts({page}) async {
-    print("cat");
+    
     var bearer = await Preferences().getToken();
     print("my hearders $bearer");
     var headers = {HttpHeaders.authorizationHeader: "Bearer $bearer"};

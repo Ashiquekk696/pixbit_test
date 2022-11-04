@@ -16,25 +16,30 @@ import '../screens/home_screen.dart';
 
 class HomeBloc extends Bloc<HomeMainEvent, HomeMainState> {
   ContactsRepository contactsRepository = ContactsRepository();
-  List<EmployeeModel> employeeData = [];
-  var page;
-  HomeBloc({required this.contactsRepository,this.page}) : super(HomeLoadingState()) {
+  List<EmployeeDataModel>? employeeModel = [];
+  int? page = 0;
+  static var currentPage;
+  static var lastPage;
+  HomeBloc({
+    required this.contactsRepository,
+  }) : super(HomeLoadingState()) {
     on<HomeDataEvent>((event, emit) async {
       emit(HomeLoadingState());
 
       try {
-        var response =
-            await contactsRepository.getAllContacts(page:page);
-        print("contct res is $response");
-        response['data']['data'].forEach((e) {
-          employeeData.add(EmployeeModel.fromJson(e));
-        });
+        page = (page ?? 0) + 1;
+        var response = await contactsRepository.getAllContacts(page: page);
 
-        emit(HomeLoadedState(employeeModel: employeeData));
+        currentPage = response['data']['current_page'];
+        lastPage = response['data']['last_page'];
+        employeeModel?.add(EmployeeDataModel.fromJson(response['data']));
+        emit(HomeLoadedState(employeeModel: employeeModel));
       } catch (e) {
         print(e);
         emit(HomeErrorState(message: e.toString()));
       }
     });
+
+    on<HomeReloadEvent>((event, emit) {});
   }
 }
